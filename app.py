@@ -33,7 +33,7 @@ st.markdown(
 )
 st.title("PDF Chatbot")
 # Set Groq API key
-os.environ["GROQ_API_KEY"] = "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"
+os.environ["GROQ_API_KEY"] = "YOUR_API_KEY"
 # File upload widget
 uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
 if uploaded_file is not None:
