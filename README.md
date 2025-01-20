@@ -1,99 +1,79 @@
-# Document Chat Assistant
+# PDF Chatbot
 
-This project is a **Document Chat Assistant** that allows users to upload PDF and Word documents, process them, and ask context-aware questions. It uses advanced Natural Language Processing (NLP) models to generate summaries and retrieve answers from the uploaded content.
+This project is a Streamlit-based chatbot application that allows users to upload PDF documents and ask questions about the content. It uses the Groq API for language model completions and PyPDF for extracting text from PDF files.
 
 ## Features
 
-- Upload and process PDF and DOCX files.
-- Extract text from uploaded documents.
-- Summarize documents using a pre-trained Hugging Face model.
-- Answer user queries based on document content.
-- Save and load chat history.
-
-## Technology Stack
-
-- **Backend**: Python
-- **Frontend**: Streamlit
-- **NLP Models**: Hugging Face Transformers
-- **Database**: SQLite
-- **Dependencies**: FAISS, PyPDF2, Sentence-Transformers, PyMuPDF, Pytesseract
+- **Upload PDFs**: Easily upload PDF files for text extraction.
+- **Chat Interface**: Ask questions about the uploaded PDF content.
+- **Groq Integration**: Utilizes the Groq API for generating responses based on the PDF content.
+- **Chat History**: View previous questions and answers in the sidebar, with options to refresh or delete entries.
+- **Custom Styling**: Aesthetic design with custom CSS for chat messages and the sidebar.
 
 ## Installation
 
-### Prerequisites
+1. **Clone the Repository**
 
-Ensure you have the following installed:
+    ```bash
+    git clone https://github.com/your-username/pdf-chatbot.git
+    cd pdf-chatbot
+    ```
 
-- **Python**: Version 3.8 or later
-- **Poppler**: Required for PDF processing ([Installation Guide](https://poppler.freedesktop.org/))
-- **Tesseract-OCR**: Required for OCR ([Installation Guide](https://github.com/tesseract-ocr/tesseract))
+2. **Install Dependencies**
 
-### Steps
+    Ensure you have Python installed, then run:
 
-1. Clone the repository:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-   ```bash
-   git clone https://github.com/arvetiaswini/document-chat-assistant.git
-   cd document-chat-assistant
-   ```
+3. **Set Up Environment Variables**
 
-2. Install Python dependencies:
+    Create a `.env` file or export the Groq API key:
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+    ```bash
+    export GROQ_API_KEY="your-groq-api-key"
+    ```
 
-3. Configure the `poppler_path` in `pdf_processor.py` (line 8) to point to your local Poppler installation.
+## Usage
 
-4. Run the application:
+1. **Run the Application**
 
-   ```bash
-   streamlit run app.py
-   ```
+    ```bash
+    streamlit run app.py
+    ```
 
-## How to Use
+2. **Upload a PDF**
 
-1. Open the application in your browser (Streamlit will provide a URL).
-2. Upload one or more PDF or DOCX files using the file uploader.
-3. Ask questions about the document content or request a summary.
-4. View the chat history to revisit previous answers.
+    Use the file uploader to select a PDF document.
+
+3. **Ask Questions**
+
+    Enter questions related to the uploaded PDF in the chat input box. The chatbot will provide relevant answers based on the document content.
+
+4. **View Chat History**
+
+    Check the sidebar for a history of questions and answers. You can refresh or delete individual entries as needed.
 
 ## Project Structure
 
 ```
-document-chat-assistant/
-│
-├── app.py                    # Main Streamlit application
-├── embeddings_manager.py     # Manages text embeddings
-├── llm.py                    # Custom LLM wrapper for Hugging Face
-├── pdf_processor.py          # PDF processing and text extraction
-├── vector_store.py           # Vector storage implementation with FAISS
-├── requirements.txt          # Required dependencies
-├── users.db                  # SQLite database for storing user data
-└── README.md                 # Project documentation
+.
+├── app.py                # Main application file
+├── requirements.txt      # Python dependencies
+├── README.md             # Project documentation
+└── .env                  # Environment variables (not included in repo)
 ```
-
-## Requirements
-
-- **Python**: Version 3.8 or later
-- **Poppler**: Required for advanced PDF processing
-- **Tesseract-OCR**: Required for OCR-based text extraction
 
 ## Dependencies
 
-The following Python packages are required and listed in `requirements.txt`:
+- **Streamlit**: For building the web application interface.
+- **PyPDF**: For extracting text from PDF files.
+- **Transformers**: For natural language processing.
+- **Groq API**: For AI completions based on PDF content.
 
-- Streamlit
-- LangChain
-- FAISS-CPU
-- PyPDF2
-- Transformers (>=4.30.0)
-- Torch (>=2.0.0)
-- Huggingface-Hub
-- PyMuPDF
-- Sentence-Transformers (>=2.2.0)
-- LangChain-Community
-- Pydantic (>=2.1)
-- PDF2Image
-- PyTesseract
-- Pillow
+## Customization
+
+- **CSS Styling**: Modify the custom CSS in `app.py` for styling adjustments.
+- **Groq Model**: Change the model and parameters in the `client.chat.completions.create` method to experiment with different outputs.
+
