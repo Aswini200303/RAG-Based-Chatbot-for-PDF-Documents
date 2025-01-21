@@ -1,13 +1,11 @@
 import streamlit as st
 from pypdf import PdfReader
 import os
-from transformers import pipeline
-import nltk
-from nltk.corpus import stopwords
-# Download NLTK stopwords
-nltk.download('stopwords')
+from groq import Groq
+
 # Set page configuration
 st.set_page_config(page_title="PDF Chatbot", layout="wide")
+
 # Inject custom CSS for styling
 st.markdown(
     """
@@ -31,11 +29,15 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 st.title("PDF Chatbot")
+
 # Set Groq API key
-os.environ["GROQ_API_KEY"] = "YOUR_API_KEY"
+os.environ["GROQ_API_KEY"] = "YoUR_API_KEY_HERE"
+
 # File upload widget
 uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
+
 if uploaded_file is not None:
     try:
         # Read PDF content using PyPDF
@@ -45,38 +47,65 @@ if uploaded_file is not None:
             pdf_text += page.extract_text()
     except Exception as e:
         st.error(f"An error occurred while reading the PDF: {e}")
+    
     if pdf_text.strip():
+        # Store PDF text in session state
+        st.session_state.pdf_text = pdf_text
+        
         # Chat interface
         user_input = st.chat_input("Ask a question about the PDF")
         if user_input:
-            # Prepare system message with the PDF content
-            system_message = {
-                "role": "system",
-                "content": f"You are an assistant that answers questions based on the following PDF content:\n\n{pdf_text}"
-            }
             # Initialize Groq client
-            from groq import Groq
             client = Groq()
+            
             try:
-                # Send query to Groq
+                # Build messages array
+                messages = [
+                    {
+                        "role": "system",
+                        "content": f"""Answer questions based on the PDF content below. Use internet knowledge if needed.
+                        PDF Content:\n\n{st.session_state.pdf_text}"""
+                    }
+                ]
+                
+                # Add chat history if exists
+                if "chat_history" in st.session_state:
+                    for chat in st.session_state.chat_history:
+                        messages.append({"role": "user", "content": chat["question"]})
+                        messages.append({"role": "assistant", "content": chat["answer"]})
+                
+                # Add current question
+                messages.append({"role": "user", "content": user_input})
+
+                # Get streaming response
                 completion = client.chat.completions.create(
                     model="llama-3.3-70b-versatile",
-                    messages=[system_message, {"role": "user", "content": user_input}],
+                    messages=messages,
                     temperature=1,
-                    max_completion_tokens=128,
+                    max_completion_tokens=1024,
                     top_p=1,
-                    stream=False,
-                    stop=None,
+                    stream=True
                 )
-                # Display the assistant's response
-                response = completion.choices[0].message.content
-                st.markdown(f"**Assistant:** {response}")
+
+                # Stream the response
+                full_response = ""
+                response_placeholder = st.empty()
+                for chunk in completion:
+                    chunk_content = chunk.choices[0].delta.content or ""
+                    full_response += chunk_content
+                    response_placeholder.markdown(f"**Assistant:** {full_response}")
+
                 # Update chat history
                 if "chat_history" not in st.session_state:
                     st.session_state.chat_history = []
-                st.session_state.chat_history.append({"question": user_input, "answer": response})
+                st.session_state.chat_history.append({
+                    "question": user_input,
+                    "answer": full_response
+                })
+
             except Exception as e:
                 st.error(f"An error occurred: {e}")
+
 # Display chat history in the sidebar
 def display_chat_history():
     st.markdown(
@@ -110,5 +139,6 @@ def display_chat_history():
                 st.write("---")
     else:
         st.sidebar.write("No chat history yet.")
+
 # Call the chat history display function
 display_chat_history()
