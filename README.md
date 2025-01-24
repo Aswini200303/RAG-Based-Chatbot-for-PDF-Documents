@@ -61,7 +61,6 @@ This project is a Streamlit-based chatbot application that allows users to uploa
 ```
 .
 ├── app.py                # Main application file
-├── requirements.txt      # Python dependencies
 ├── README.md             # Project documentation
 └── .env                  # Environment variables (not included in repo)
 ```
