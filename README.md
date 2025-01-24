@@ -15,9 +15,9 @@ This project is a Streamlit-based chatbot application that allows users to uploa
 1. **Clone the Repository**
 
     ```bash
-    git clone https://github.com/Aswini200303/RAG-Based-Chatbot-for-PDF-Documents.git
-
-    cd pdf-chatbot
+    cd D:\Chatpdf
+git clone https://github.com/Aswini200303/RAG-Based-Chatbot-for-PDF-Documents.git
+cd RAG-Based-Chatbot-for-PDF-Documents
     ```
 
 2. **Install Dependencies**
